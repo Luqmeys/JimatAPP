@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="JimatAPP_2.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:JimatAPP_2"
+    Shell.FlyoutBehavior="Flyout"
+    Shell.BackgroundColor="#2E2E2E"
+    Shell.TitleColor="White"
+    Title="JimatAPP_2">
+    
+    <Shell.FlyoutHeader>
+        <VerticalStackLayout>
+            <Label Text="MENU" HeightRequest="50" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" Shell.BackgroundColor="#6EE7B7"></Label>
+        </VerticalStackLayout>
+    </Shell.FlyoutHeader>
+
+
+    <ShellContent
+        Title="View Expenses/Income"
+        ContentTemplate="{DataTemplate local:ViewExpenses}"
+        Route="MainPage" />
+
+    <ShellContent
+        Title="View Summary"
+        ContentTemplate="{DataTemplate local:Summary}"
+        Route="Summary" />
+    
+    <ShellContent
+        Title="About Us"
+        ContentTemplate="{DataTemplate local:AboutUs}"
+        Route="AboutUs" />
+
+</Shell>

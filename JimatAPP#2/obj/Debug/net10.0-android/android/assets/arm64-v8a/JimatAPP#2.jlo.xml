@@ -1,0 +1,15 @@
+<api>
+  <jcw-types>
+    <type name="MainActivity" package="crc64fbeca6b22ebd2509" application_java_class="android.app.Application" mono_runtime_initialization="mono.MonoPackageManager.LoadApplication (context);" extends_type="crc6488302ad6e9e4df1a.MauiAppCompatActivity" partial_assembly_qualified_name="JimatAPP_2.MainActivity, JimatAPP#2">
+      <constructors>
+        <constructor name="MainActivity" method="n_.ctor:()V:" jni_signature="()V" managed_parameters="" retval="void" is_dynamically_registered="True" />
+        <constructor name="MainActivity" method="n_.ctor:(I)V:" jni_signature="(I)V" managed_parameters="System.Int32, System.Private.CoreLib" params="int p0" retval="void" is_dynamically_registered="True" super_call="p0" activate_call="p0" />
+      </constructors>
+    </type>
+    <type name="MainApplication" package="crc64fbeca6b22ebd2509" application_java_class="android.app.Application" mono_runtime_initialization="mono.MonoPackageManager.LoadApplication (context);" extends_type="crc6488302ad6e9e4df1a.MauiApplication" is_application="True" partial_assembly_qualified_name="JimatAPP_2.MainApplication, JimatAPP#2" application_constructor="MainApplication" />
+  </jcw-types>
+  <acw-types partial-assembly-name="JimatAPP#2" module-name="JimatAPP#2.dll">
+    <type assembly-qualified-name="JimatAPP_2.MainActivity, JimatAPP#2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" compat-jni-name="jimatapp_2.MainActivity" java-key="crc64fbeca6b22ebd2509.MainActivity" managed-key="JimatAPP_2.MainActivity" partial-assembly-qualified-name="JimatAPP_2.MainActivity, JimatAPP#2" />
+    <type assembly-qualified-name="JimatAPP_2.MainApplication, JimatAPP#2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" compat-jni-name="jimatapp_2.MainApplication" java-key="crc64fbeca6b22ebd2509.MainApplication" managed-key="JimatAPP_2.MainApplication" partial-assembly-qualified-name="JimatAPP_2.MainApplication, JimatAPP#2" />
+  </acw-types>
+</api>

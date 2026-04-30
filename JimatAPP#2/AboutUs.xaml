@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="JimatAPP_2.AboutUs"
+             Title="About Us"
+             BackgroundColor="#F5F5F5">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="CardTextStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="15"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="LineHeight" Value="1.5"/>
+                <Setter Property="HorizontalTextAlignment" Value="Start"/>
+            </Style>
+
+            <Style x:Key="SectionHeadingStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="TextColor" Value="#6EE7B7"/>
+                <Setter Property="Margin" Value="0,0,0,10"/>
+            </Style>
+
+            <Style x:Key="InfoKeyStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="TextColor" Value="#AAAAAA"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+            </Style>
+
+            <Style x:Key="InfoValueStyle" TargetType="Label">
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="VerticalOptions" Value="Center"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="20,32,20,40">
+
+            <!-- ── App Name ── -->
+            <Label Text="JimatAPP"
+                   FontSize="28" FontAttributes="Bold"
+                   TextColor="#1A1A1A" HorizontalOptions="Center"
+                   Margin="0,0,0,4"/>
+
+            <BoxView HeightRequest="2" BackgroundColor="#6EE7B7"
+                     WidthRequest="60" HorizontalOptions="Center"
+                     Margin="0,0,0,8"/>
+
+            <!-- ── About Application ── -->
+            <Border BackgroundColor="#2E3250" StrokeThickness="0"
+                    StrokeShape="RoundRectangle 16" Padding="20,18">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="ABOUT APPLICATION" Style="{StaticResource SectionHeadingStyle}"/>
+                    <Label Style="{StaticResource CardTextStyle}"
+                           Text="Jimat helps you effortlessly track expenses and manage budgets, empowering you to take full control of your financial future."/>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- ── Developer Info ── -->
+            <Border BackgroundColor="#2E3250" StrokeThickness="0"
+                    StrokeShape="RoundRectangle 16" Padding="20,18">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="DEVELOPER INFO" Style="{StaticResource SectionHeadingStyle}"/>
+
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" RowSpacing="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Developer -->
+                        <Label Grid.Row="0" Grid.Column="0" Text="Developer" Style="{StaticResource InfoKeyStyle}"/>
+                        <Label Grid.Row="0" Grid.Column="1" Text="Luqman Afif bin Mohd Zainuddin" Style="{StaticResource InfoValueStyle}"/>
+                        <!-- ID -->
+                        <Label Grid.Row="1" Grid.Column="0" Text="Student ID" Style="{StaticResource InfoKeyStyle}"/>
+                        <Label Grid.Row="1" Grid.Column="1" Text="Bsw01085338" Style="{StaticResource InfoValueStyle}"/>
+                        <!-- Subject -->
+                        <Label Grid.Row="2" Grid.Column="0" Text="Subject" Style="{StaticResource InfoKeyStyle}"/>
+                        <Label Grid.Row="2" Grid.Column="1" Text="Mobile App Development (MAD) Section 01AT" Style="{StaticResource InfoValueStyle}"/>
+                        <!-- Lecturer -->
+                        <Label Grid.Row="3" Grid.Column="0" Text="Lecturer" Style="{StaticResource InfoKeyStyle}"/>
+                        <Label Grid.Row="3" Grid.Column="1" Text="Ts. Dr. Asmidar binti Abu Bakar" Style="{StaticResource InfoValueStyle}"/>
+                        <!-- Platform -->
+                        <Label Grid.Row="4" Grid.Column="0" Text="Platform" Style="{StaticResource InfoKeyStyle}"/>
+                        <Label Grid.Row="4" Grid.Column="1" Text=".NET MAUI" Style="{StaticResource InfoValueStyle}"/>
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- ── Description ── -->
+            <Border BackgroundColor="#2E3250" StrokeThickness="0"
+                    StrokeShape="RoundRectangle 16" Padding="20,18">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="DESCRIPTION" Style="{StaticResource SectionHeadingStyle}"/>
+                    <Label Style="{StaticResource CardTextStyle}"
+                           Text="This application was developed as part of the Mobile App Development (MAD) course (Section 01AT) at Universiti Tenaga Nasional (UNITEN). Created during my fifth semester in 2026, the project was completed under the expert supervision of Assoc. Prof. Ts. Dr. Asmidar binti Abu Bakar."/>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- ── Our Impact and Values ── -->
+            <Border BackgroundColor="#2E3250" StrokeThickness="0"
+                    StrokeShape="RoundRectangle 16" Padding="20,18">
+                <VerticalStackLayout Spacing="14">
+                    <Label Text="OUR IMPACT &amp; VALUES" Style="{StaticResource SectionHeadingStyle}"/>
+
+                    <!-- SDG 8 Image -->
+                    <Border BackgroundColor="#1A1A1A" StrokeThickness="0"
+                            StrokeShape="RoundRectangle 12" Padding="12">
+                        <VerticalStackLayout Spacing="8">
+                            <Image Source="sdg.png"
+                                   HeightRequest="160"
+                                   Aspect="AspectFit"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="SDG 8 · Decent Work and Economic Growth"
+                                   FontSize="12" TextColor="#AAAAAA"
+                                   HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- ESG Image -->
+                    <Border BackgroundColor="#1A1A1A" StrokeThickness="0"
+                            StrokeShape="RoundRectangle 12" Padding="12">
+                        <VerticalStackLayout Spacing="8">
+                            <Image Source="esg.jpg"
+                                   HeightRequest="160"
+                                   Aspect="AspectFit"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="ESG · Environmental, Social &amp; Governance"
+                                   FontSize="12" TextColor="#AAAAAA"
+                                   HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
