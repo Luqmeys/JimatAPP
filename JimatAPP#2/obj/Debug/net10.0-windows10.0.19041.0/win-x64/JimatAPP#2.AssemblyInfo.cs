@@ -18,7 +18,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("JimatAPP#2")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+767a2c15cd13e3b676c98a663403fa1090022c76")]
 [assembly: System.Reflection.AssemblyProductAttribute("JimatAPP#2")]
 [assembly: System.Reflection.AssemblyTitleAttribute("JimatAPP#2")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

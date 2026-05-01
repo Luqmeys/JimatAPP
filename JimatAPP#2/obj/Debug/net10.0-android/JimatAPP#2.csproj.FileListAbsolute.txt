@@ -1630,3 +1630,4 @@ C:\Users\LUQMAN_AF\source\repos\JimatAPP#2\JimatAPP#2\obj\Debug\net10.0-android\
 C:\Users\LUQMAN_AF\source\repos\JimatAPP#2\JimatAPP#2\obj\Debug\net10.0-android\stamp\_GenerateJavaStubs.stamp
 C:\Users\LUQMAN_AF\source\repos\JimatAPP#2\JimatAPP#2\obj\Debug\net10.0-android\stamp\_GeneratePackageManagerJava.stamp
 C:\Users\LUQMAN_AF\source\repos\JimatAPP#2\JimatAPP#2\obj\Debug\net10.0-android\stamp\_ResolveLibraryProjectImports.stamp
+C:\Users\LUQMAN_AF\source\repos\JimatAPP#2\JimatAPP#2\obj\Debug\net10.0-android\JimatAPP#2.sourcelink.json

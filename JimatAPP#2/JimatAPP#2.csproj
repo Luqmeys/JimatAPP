@@ -28,7 +28,7 @@
 		<MauiXamlInflator>SourceGen</MauiXamlInflator>
 
 		<!-- Display name -->
-		<ApplicationTitle>JimatAPP#2</ApplicationTitle>
+		<ApplicationTitle>JimatAPP : Money Usage Tracker</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.companyname.jimatapp2</ApplicationId>
@@ -95,9 +95,6 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="ViewIncome.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="ViewSummary.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

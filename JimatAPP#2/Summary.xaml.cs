@@ -1,4 +1,7 @@
 using Microsoft.Maui.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace JimatAPP_2
 {
@@ -19,66 +22,33 @@ namespace JimatAPP_2
             decimal total = Segments.Sum(s => s.Value);
             if (total <= 0) return;
 
-            double startDeg = -90.0;
+            float startDeg = -90f;
 
             foreach (var seg in Segments)
             {
-                double sweepDeg = (double)(seg.Value / total) * 360.0;
-                double endDeg = startDeg + sweepDeg;
+                float sweep = (float)(seg.Value / total) * 360f;
+                float endDeg = startDeg + sweep;
 
-                double startRad = startDeg * Math.PI / 180.0;
-                double endRad = endDeg * Math.PI / 180.0;
-
+                canvas.FillColor = seg.Slice;
                 var path = new PathF();
                 path.MoveTo(cx, cy);
 
-                float x1 = cx + radius * (float)Math.Cos(startRad);
-                float y1 = cy + radius * (float)Math.Sin(startRad);
-                path.LineTo(x1, y1);
-
-                double remaining = sweepDeg;
-                double current = startDeg;
-                while (remaining > 0)
+                int steps = Math.Max(3, (int)(sweep / 2));
+                for (int s = 0; s <= steps; s++)
                 {
-                    double step = Math.Min(remaining, 90.0);
-                    AddArcSegment(path, cx, cy, radius, current, step);
-                    current += step;
-                    remaining -= step;
+                    float angle = startDeg + sweep * s / steps;
+                    float rad = angle * MathF.PI / 180f;
+                    path.LineTo(cx + radius * MathF.Cos(rad),
+                                cy + radius * MathF.Sin(rad));
                 }
 
                 path.Close();
-                canvas.FillColor = seg.Slice;
                 canvas.FillPath(path);
-
                 startDeg = endDeg;
             }
 
-            // Donut hole
             canvas.FillColor = Color.FromArgb("#1A1A1A");
-            canvas.FillCircle(cx, cy, radius * 0.55f);
-        }
-
-        private static void AddArcSegment(
-            PathF path, float cx, float cy, float radius,
-            double startDeg, double sweepDeg)
-        {
-            double startRad = startDeg * Math.PI / 180.0;
-            double endRad = (startDeg + sweepDeg) * Math.PI / 180.0;
-
-            double alpha = Math.Sin(endRad - startRad) *
-                           (Math.Sqrt(4 + 3 * Math.Pow(Math.Tan((endRad - startRad) / 2), 2)) - 1) / 3.0;
-
-            float sx = cx + radius * (float)Math.Cos(startRad);
-            float sy = cy + radius * (float)Math.Sin(startRad);
-            float ex = cx + radius * (float)Math.Cos(endRad);
-            float ey = cy + radius * (float)Math.Sin(endRad);
-
-            float cp1x = sx + (float)(-alpha * radius * Math.Sin(startRad));
-            float cp1y = sy + (float)(alpha * radius * Math.Cos(startRad));
-            float cp2x = ex - (float)(-alpha * radius * Math.Sin(endRad));
-            float cp2y = ey - (float)(alpha * radius * Math.Cos(endRad));
-
-            path.CurveTo(cp1x, cp1y, cp2x, cp2y, ex, ey);
+            canvas.FillCircle(cx, cy, radius * 0.52f);
         }
     }
 
@@ -105,21 +75,48 @@ namespace JimatAPP_2
         private static readonly Color DarkCard = Color.FromArgb("#2A2A2A");
         private static readonly Color BarBg = Color.FromArgb("#3A3A3A");
         private static readonly Color DisabledArrow = Color.FromArgb("#444444");
-        private static readonly Color NoteColor = Color.FromArgb("#666666");
 
         private enum Period { Week, Month, Year, All }
         private enum Tab { Expenses, Income }
 
+        // ── 4-state sort cycle ────────────────────────────────────────────────
+        // Cycles: DateDesc → DateAsc → AmountDesc → AmountAsc → DateDesc …
+        private enum DetailSort { DateDesc, DateAsc, AmountDesc, AmountAsc }
+
+        private static readonly DetailSort[] SortCycle =
+        {
+            DetailSort.DateDesc,
+            DetailSort.DateAsc,
+            DetailSort.AmountDesc,
+            DetailSort.AmountAsc
+        };
+
+        // Label shown on the toggle button for each state
+        private static string SortLabel(DetailSort s) => s switch
+        {
+            DetailSort.DateDesc => "↓ Date (Newest)",
+            DetailSort.DateAsc => "↑ Date (Oldest)",
+            DetailSort.AmountDesc => "↓ Amount (High)",
+            DetailSort.AmountAsc => "↑ Amount (Low)",
+            _ => "↓ Date (Newest)"
+        };
+
+        // ── State ─────────────────────────────────────────────────────────────
+        private DetailSort _detailSort = DetailSort.DateDesc; // default
         private Period _period = Period.Week;
         private Tab _tab = Tab.Expenses;
         private int _periodOffset = 0;
 
-        // Keeps the current filtered range so the popup can query it
-        private DateTime _currentStart = DateTime.MinValue;
-        private DateTime _currentEnd = DateTime.MaxValue;
-
         private readonly PieChartDrawable _pieDrawable = new();
         private readonly List<(Border Bg, BoxView Fill, double Pct)> _barRefs = new();
+
+        private List<(string Category, decimal Amount)> _currentGroups = new();
+        private DateTime _currentStart;
+        private DateTime _currentEnd;
+        private string _currentPeriodLabel = "";
+
+        private string _detailCategory = "";
+        private Color _detailAccent = Colors.White;
 
         public Summary()
         {
@@ -134,7 +131,6 @@ namespace JimatAPP_2
         }
 
         // ── Tab handlers ──────────────────────────────────────────────────────
-
         private void OnExpensesTabTapped(object sender, EventArgs e)
         {
             if (_tab == Tab.Expenses) return;
@@ -162,22 +158,24 @@ namespace JimatAPP_2
         }
 
         // ── Period pill handlers ──────────────────────────────────────────────
-
         private void OnWeekTapped(object sender, EventArgs e)
         {
             if (_period == Period.Week && _periodOffset == 0) return;
             _period = Period.Week; _periodOffset = 0; UpdatePillUI(); Refresh();
         }
+
         private void OnMonthTapped(object sender, EventArgs e)
         {
             if (_period == Period.Month && _periodOffset == 0) return;
             _period = Period.Month; _periodOffset = 0; UpdatePillUI(); Refresh();
         }
+
         private void OnYearTapped(object sender, EventArgs e)
         {
             if (_period == Period.Year && _periodOffset == 0) return;
             _period = Period.Year; _periodOffset = 0; UpdatePillUI(); Refresh();
         }
+
         private void OnAllTapped(object sender, EventArgs e)
         {
             if (_period == Period.All) return;
@@ -208,8 +206,7 @@ namespace JimatAPP_2
             });
         }
 
-        // ── Period navigation arrows ──────────────────────────────────────────
-
+        // ── Period navigation ─────────────────────────────────────────────────
         private void OnPreviousPeriodTapped(object sender, EventArgs e)
         {
             if (_period == Period.All) return;
@@ -224,22 +221,30 @@ namespace JimatAPP_2
             Refresh();
         }
 
-        // ── Core refresh ──────────────────────────────────────────────────────
+        private void OnBackToCurrentTapped(object sender, EventArgs e)
+        {
+            _periodOffset = 0;
+            Refresh();
+        }
 
+        // ── Core refresh ─────────────────────────────────────────────────────
         private void Refresh()
         {
             var (start, end, label) = GetDateRange();
             _currentStart = start;
             _currentEnd = end;
+            _currentPeriodLabel = label;
+
             PeriodRangeLabel.Text = label;
 
             bool atCurrent = _period == Period.All || _periodOffset >= 0;
             NextArrowLabel.TextColor = atCurrent ? DisabledArrow : Colors.White;
+            BackToCurrentBorder.IsVisible = _period != Period.All && _periodOffset < 0;
 
             if (_tab == Tab.Expenses)
-                RefreshData(start, end, RedAccent);
+                RefreshData(ExpenseStore.Items, start, end, RedAccent);
             else
-                RefreshData(start, end, GreenAccent);
+                RefreshData(IncomeStore.Items, start, end, GreenAccent);
 
             RefreshNetBalance(start, end);
         }
@@ -278,32 +283,33 @@ namespace JimatAPP_2
         }
 
         // ── Unified data refresh ──────────────────────────────────────────────
-
-        private void RefreshData(DateTime start, DateTime end, Color totalColor)
+        private void RefreshData<T>(
+            IEnumerable<T> store, DateTime start, DateTime end, Color totalColor)
+            where T : class
         {
-            decimal total;
-            List<(string Category, decimal Amount)> groups;
+            List<T> items = _tab == Tab.Expenses
+                ? ExpenseStore.Items
+                    .Where(i => i.Date.Date >= start.Date && i.Date.Date <= end.Date)
+                    .Cast<T>().ToList()
+                : IncomeStore.Items
+                    .Where(i => i.Date.Date >= start.Date && i.Date.Date <= end.Date)
+                    .Cast<T>().ToList();
 
-            if (_tab == Tab.Expenses)
-            {
-                var items = ExpenseStore.Items
-                    .Where(i => i.Date.Date >= start.Date && i.Date.Date <= end.Date)
-                    .ToList();
-                total = items.Sum(i => i.Amount);
-                groups = items.GroupBy(i => i.Category)
-                              .Select(g => (Category: g.Key, Amount: g.Sum(x => x.Amount)))
-                              .OrderByDescending(g => g.Amount).ToList();
-            }
-            else
-            {
-                var items = IncomeStore.Items
-                    .Where(i => i.Date.Date >= start.Date && i.Date.Date <= end.Date)
-                    .ToList();
-                total = items.Sum(i => i.Amount);
-                groups = items.GroupBy(i => i.Category)
-                              .Select(g => (Category: g.Key, Amount: g.Sum(x => x.Amount)))
-                              .OrderByDescending(g => g.Amount).ToList();
-            }
+            decimal total = _tab == Tab.Expenses
+                ? items.Cast<ExpenseItem>().Sum(i => i.Amount)
+                : items.Cast<IncomeItem>().Sum(i => i.Amount);
+
+            var groups = _tab == Tab.Expenses
+                ? items.Cast<ExpenseItem>()
+                       .GroupBy(i => i.Category)
+                       .Select(g => (Category: g.Key, Amount: g.Sum(x => x.Amount)))
+                       .OrderByDescending(g => g.Amount).ToList()
+                : items.Cast<IncomeItem>()
+                       .GroupBy(i => i.Category)
+                       .Select(g => (Category: g.Key, Amount: g.Sum(x => x.Amount)))
+                       .OrderByDescending(g => g.Amount).ToList();
+
+            _currentGroups = groups;
 
             TotalAmountLabel.Text = $"RM {total:F2}";
             TotalAmountLabel.TextColor = totalColor;
@@ -313,7 +319,6 @@ namespace JimatAPP_2
         }
 
         // ── Pie chart + legend ────────────────────────────────────────────────
-
         private void DrawPieAndLegend(
             List<(string Category, decimal Amount)> groups, decimal total)
         {
@@ -363,6 +368,7 @@ namespace JimatAPP_2
                     FontAttributes = FontAttributes.Bold,
                     VerticalOptions = LayoutOptions.Center
                 };
+
                 Grid.SetColumn(catLbl, 1);
                 Grid.SetColumn(pctLbl, 2);
                 row.Children.Add(dot);
@@ -375,23 +381,21 @@ namespace JimatAPP_2
         }
 
         // ── Breakdown list ────────────────────────────────────────────────────
-
         private void DrawBreakdown(
             List<(string Category, decimal Amount)> groups, decimal total)
         {
             BreakdownStack.Children.Clear();
             _barRefs.Clear();
-
-            bool hasData = groups.Count > 0;
-            EmptyBreakdownLabel.IsVisible = !hasData;
-            BreakdownHintLabel.IsVisible = hasData;
+            EmptyBreakdownLabel.IsVisible = groups.Count == 0;
 
             for (int i = 0; i < groups.Count; i++)
             {
                 var g = groups[i];
                 var color = Palette[i % Palette.Length];
                 double pct = total > 0 ? (double)(g.Amount / total * 100) : 0;
-                var category = g.Category; // capture for closure
+
+                var capturedGroup = g;
+                var capturedColor = color;
 
                 var card = new Border
                 {
@@ -401,19 +405,15 @@ namespace JimatAPP_2
                     Padding = new Thickness(16, 12)
                 };
 
-                // Tap to open detail popup
                 card.GestureRecognizers.Add(new TapGestureRecognizer
                 {
-                    Command = new Command(() => ShowCategoryDetail(category, color))
+                    Command = new Command(() => ShowBreakdownDetail(capturedGroup.Category, capturedColor))
                 });
 
                 var layout = new VerticalStackLayout { Spacing = 8 };
-
-                // Top row: name + amount + chevron
                 var topRow = new Grid();
                 topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Star });
                 topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-                topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = 20 });
 
                 var catLbl = new Label
                 {
@@ -423,6 +423,18 @@ namespace JimatAPP_2
                     TextColor = color,
                     VerticalOptions = LayoutOptions.Center
                 };
+                var tapHint = new Label
+                {
+                    Text = "tap for details →",
+                    FontSize = 10,
+                    TextColor = MutedText,
+                    VerticalOptions = LayoutOptions.Center,
+                    Margin = new Thickness(6, 0, 0, 0)
+                };
+                var leftRow = new HorizontalStackLayout { VerticalOptions = LayoutOptions.Center };
+                leftRow.Children.Add(catLbl);
+                leftRow.Children.Add(tapHint);
+
                 var amtLbl = new Label
                 {
                     Text = $"RM {g.Amount:F2}",
@@ -431,21 +443,10 @@ namespace JimatAPP_2
                     TextColor = Colors.White,
                     VerticalOptions = LayoutOptions.Center
                 };
-                var chevron = new Label
-                {
-                    Text = "›",
-                    FontSize = 18,
-                    TextColor = MutedText,
-                    VerticalOptions = LayoutOptions.Center,
-                    HorizontalOptions = LayoutOptions.End
-                };
                 Grid.SetColumn(amtLbl, 1);
-                Grid.SetColumn(chevron, 2);
-                topRow.Children.Add(catLbl);
+                topRow.Children.Add(leftRow);
                 topRow.Children.Add(amtLbl);
-                topRow.Children.Add(chevron);
 
-                // Progress bar
                 var barGrid = new Grid();
                 barGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(pct, GridUnitType.Star) });
                 barGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100 - pct, GridUnitType.Star) });
@@ -472,126 +473,211 @@ namespace JimatAPP_2
             }
         }
 
-        // ── Category detail popup ─────────────────────────────────────────────
-
-        private void ShowCategoryDetail(string category, Color accentColor)
+        // ── Breakdown detail popup — ENTRY POINT ──────────────────────────────
+        private void ShowBreakdownDetail(string category, Color accentColor)
         {
-            DetailCategoryLabel.Text = category;
-            DetailCategoryLabel.TextColor = accentColor;
-            DetailItemsStack.Children.Clear();
+            _detailCategory = category;
+            _detailAccent = accentColor;
+
+            // Always reset to Date↓ (newest first) when opening a fresh category
+            _detailSort = DetailSort.DateDesc;
+
+            DetailPopupCategoryLabel.Text = category;
+            DetailPopupCategoryLabel.TextColor = accentColor;
+            DetailPopupPeriodLabel.Text = _currentPeriodLabel;
+
+            UpdateSortButtonUI();
+            RebuildDetailRows();
+
+            DetailPopupOverlay.IsVisible = true;
+        }
+
+        // ── Sort toggle — cycles through all 4 states ─────────────────────────
+        private void OnDetailSortToggled(object sender, EventArgs e)
+        {
+            // Find current position in cycle and advance to next
+            int currentIndex = Array.IndexOf(SortCycle, _detailSort);
+            _detailSort = SortCycle[(currentIndex + 1) % SortCycle.Length];
+
+            UpdateSortButtonUI();
+            RebuildDetailRows();
+        }
+
+        private void UpdateSortButtonUI()
+        {
+            if (DetailSortToggleLabel != null)
+                DetailSortToggleLabel.Text = SortLabel(_detailSort);
+        }
+
+        // ── Apply the current sort to a list of expense items ─────────────────
+        private IEnumerable<ExpenseItem> ApplySortExpense(IEnumerable<ExpenseItem> q) =>
+            _detailSort switch
+            {
+                DetailSort.DateDesc => q.OrderByDescending(i => i.Date),
+                DetailSort.DateAsc => q.OrderBy(i => i.Date),
+                DetailSort.AmountDesc => q.OrderByDescending(i => i.Amount),
+                DetailSort.AmountAsc => q.OrderBy(i => i.Amount),
+                _ => q.OrderByDescending(i => i.Date)
+            };
+
+        // ── Apply the current sort to a list of income items ──────────────────
+        private IEnumerable<IncomeItem> ApplySortIncome(IEnumerable<IncomeItem> q) =>
+            _detailSort switch
+            {
+                DetailSort.DateDesc => q.OrderByDescending(i => i.Date),
+                DetailSort.DateAsc => q.OrderBy(i => i.Date),
+                DetailSort.AmountDesc => q.OrderByDescending(i => i.Amount),
+                DetailSort.AmountAsc => q.OrderBy(i => i.Amount),
+                _ => q.OrderByDescending(i => i.Date)
+            };
+
+        // ── RebuildDetailRows ─────────────────────────────────────────────────
+        private void RebuildDetailRows()
+        {
+            List<(DateTime Date, decimal Amount, string Desc)> items;
 
             if (_tab == Tab.Expenses)
             {
-                var items = ExpenseStore.Items
-                    .Where(i => i.Date.Date >= _currentStart.Date &&
-                                i.Date.Date <= _currentEnd.Date &&
-                                i.Category == category)
-                    .OrderByDescending(i => i.Date)
+                var query = ExpenseStore.Items
+                    .Where(i => i.Date.Date >= _currentStart.Date
+                             && i.Date.Date <= _currentEnd.Date
+                             && string.Equals(
+                                    i.Category?.Trim(),
+                                    _detailCategory?.Trim(),
+                                    StringComparison.OrdinalIgnoreCase));
+
+                items = ApplySortExpense(query)
+                    .Select(i => (i.Date, i.Amount, i.Description))
                     .ToList();
-
-                DetailTotalLabel.Text = $"RM {items.Sum(i => i.Amount):F2}";
-                DetailTotalLabel.TextColor = accentColor;
-                DetailCountLabel.Text = $"{items.Count} transaction{(items.Count == 1 ? "" : "s")}";
-
-                foreach (var item in items)
-                    DetailItemsStack.Children.Add(
-                        BuildDetailRow(item.Date, item.Amount, item.Description, accentColor));
             }
-            else
+            else // Tab.Income
             {
-                var items = IncomeStore.Items
-                    .Where(i => i.Date.Date >= _currentStart.Date &&
-                                i.Date.Date <= _currentEnd.Date &&
-                                i.Category == category)
-                    .OrderByDescending(i => i.Date)
+                var query = IncomeStore.Items
+                    .Where(i => i.Date.Date >= _currentStart.Date
+                             && i.Date.Date <= _currentEnd.Date
+                             && string.Equals(
+                                    i.Category?.Trim(),
+                                    _detailCategory?.Trim(),
+                                    StringComparison.OrdinalIgnoreCase));
+
+                items = ApplySortIncome(query)
+                    .Select(i => (i.Date, i.Amount, i.Description))
                     .ToList();
-
-                DetailTotalLabel.Text = $"RM {items.Sum(i => i.Amount):F2}";
-                DetailTotalLabel.TextColor = accentColor;
-                DetailCountLabel.Text = $"{items.Count} transaction{(items.Count == 1 ? "" : "s")}";
-
-                foreach (var item in items)
-                    DetailItemsStack.Children.Add(
-                        BuildDetailRow(item.Date, item.Amount, item.Description, accentColor));
             }
 
-            CategoryDetailOverlay.IsVisible = true;
-        }
+            decimal catTotal = items.Sum(i => i.Amount);
+            DetailPopupTotalLabel.Text = $"RM {catTotal:F2}";
+            DetailPopupTotalLabel.TextColor = _detailAccent;
 
-        private View BuildDetailRow(DateTime date, decimal amount, string description, Color accentColor)
-        {
-            var card = new Border
+            DetailItemsStack.Children.Clear();
+
+            foreach (var item in items)
             {
-                BackgroundColor = Color.FromArgb("#333333"),
-                StrokeThickness = 0,
-                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 12 },
-                Padding = new Thickness(14, 10)
-            };
+                var capturedDate = item.Date;
 
-            var layout = new VerticalStackLayout { Spacing = 4 };
-
-            // Date + amount row
-            var topRow = new Grid();
-            topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Star });
-            topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-
-            var dateLbl = new Label
-            {
-                Text = date.ToString("MMM d, yyyy"),
-                FontSize = 12,
-                TextColor = MutedText,
-                VerticalOptions = LayoutOptions.Center
-            };
-            var amtLbl = new Label
-            {
-                Text = $"RM {amount:F2}",
-                FontSize = 14,
-                FontAttributes = FontAttributes.Bold,
-                TextColor = accentColor,
-                VerticalOptions = LayoutOptions.Center
-            };
-            Grid.SetColumn(amtLbl, 1);
-            topRow.Children.Add(dateLbl);
-            topRow.Children.Add(amtLbl);
-            layout.Children.Add(topRow);
-
-            // Description (only if present)
-            if (!string.IsNullOrWhiteSpace(description))
-            {
-                layout.Children.Add(new Label
+                var rowBorder = new Border
                 {
-                    Text = description,
-                    FontSize = 12,
-                    TextColor = NoteColor,
-                    LineBreakMode = LineBreakMode.WordWrap
-                });
-            }
+                    BackgroundColor = Colors.Transparent,
+                    StrokeThickness = 0,
+                    Padding = new Thickness(0, 6)
+                };
 
-            card.Content = layout;
-            return card;
+                rowBorder.GestureRecognizers.Add(new TapGestureRecognizer
+                {
+                    Command = new Command(async () =>
+                    {
+                        DetailPopupOverlay.IsVisible = false;
+
+                        if (_tab == Tab.Expenses)
+                            await Navigation.PushAsync(new ViewExpenses(capturedDate));
+                        else
+                            await Navigation.PushAsync(new ViewIncome(capturedDate));
+                    })
+                });
+
+                var row = new Grid();
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Star });
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+                var leftCol = new VerticalStackLayout { Spacing = 2 };
+
+                leftCol.Children.Add(new Label
+                {
+                    Text = item.Date.ToString("MMM d, yyyy"),
+                    FontSize = 12,
+                    TextColor = MutedText
+                });
+
+                if (!string.IsNullOrWhiteSpace(item.Desc))
+                {
+                    leftCol.Children.Add(new Label
+                    {
+                        Text = item.Desc,
+                        FontSize = 11,
+                        TextColor = Color.FromArgb("#666666"),
+                        LineBreakMode = LineBreakMode.TailTruncation,
+                        MaxLines = 1
+                    });
+                }
+
+                leftCol.Children.Add(new Label
+                {
+                    Text = "tap to view day →",
+                    FontSize = 9,
+                    TextColor = Color.FromArgb("#555555")
+                });
+
+                var amtLbl = new Label
+                {
+                    Text = $"RM {item.Amount:F2}",
+                    FontSize = 14,
+                    FontAttributes = FontAttributes.Bold,
+                    TextColor = Colors.White,
+                    VerticalOptions = LayoutOptions.Center
+                };
+
+                Grid.SetColumn(amtLbl, 1);
+                row.Children.Add(leftCol);
+                row.Children.Add(amtLbl);
+                rowBorder.Content = row;
+
+                var sep = new BoxView
+                {
+                    HeightRequest = 1,
+                    BackgroundColor = Color.FromArgb("#2E2E2E")
+                };
+
+                DetailItemsStack.Children.Add(rowBorder);
+                DetailItemsStack.Children.Add(sep);
+            }
         }
 
-        private void OnDetailOverlayDismiss(object sender, EventArgs e)
-            => CategoryDetailOverlay.IsVisible = false;
+        // ── Popup dismiss handlers ────────────────────────────────────────────
+        private void OnDetailPopupDismiss(object sender, EventArgs e) =>
+            DetailPopupOverlay.IsVisible = false;
 
-        private void OnDetailCardTapped(object sender, EventArgs e) { } // swallow tap
+        private void OnDetailPopupCardTapped(object sender, EventArgs e) { }
 
         // ── Net balance ───────────────────────────────────────────────────────
-
         private void RefreshNetBalance(DateTime start, DateTime end)
         {
             decimal income = IncomeStore.Items
                 .Where(i => i.Date.Date >= start.Date && i.Date.Date <= end.Date)
                 .Sum(i => i.Amount);
+
             decimal expenses = ExpenseStore.Items
                 .Where(i => i.Date.Date >= start.Date && i.Date.Date <= end.Date)
                 .Sum(i => i.Amount);
+
             decimal net = income - expenses;
 
             NetIncomeLabel.Text = $"RM {income:F2}";
             NetExpensesLabel.Text = $"RM {expenses:F2}";
             NetBalanceLabel.Text = $"RM {net:F2}";
             NetBalanceLabel.TextColor = net >= 0 ? GreenAccent : RedAccent;
+
+            // 🔥 SHOW / HIDE WARNING LABEL
+            NetWarningLabel.IsVisible = net < 0;
         }
     }
 }

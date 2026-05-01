@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "U35LUVK0X7I=",
+  "dgSpecHash": "vjcgnzPknGM=",
   "success": true,
   "projectFilePath": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\JimatAPP#2.csproj",
   "expectedPackageFiles": [
@@ -28,7 +28,7 @@
     "C:\\Users\\LUQMAN_AF\\.nuget\\packages\\microsoft.maui.graphics\\10.0.20\\microsoft.maui.graphics.10.0.20.nupkg.sha512",
     "C:\\Users\\LUQMAN_AF\\.nuget\\packages\\microsoft.maui.graphics.win2d.winui.desktop\\10.0.20\\microsoft.maui.graphics.win2d.winui.desktop.10.0.20.nupkg.sha512",
     "C:\\Users\\LUQMAN_AF\\.nuget\\packages\\microsoft.maui.resizetizer\\10.0.20\\microsoft.maui.resizetizer.10.0.20.nupkg.sha512",
-    "C:\\Users\\LUQMAN_AF\\.nuget\\packages\\microsoft.net.illink.tasks\\10.0.6\\microsoft.net.illink.tasks.10.0.6.nupkg.sha512",
+    "C:\\Users\\LUQMAN_AF\\.nuget\\packages\\microsoft.net.illink.tasks\\10.0.7\\microsoft.net.illink.tasks.10.0.7.nupkg.sha512",
     "C:\\Users\\LUQMAN_AF\\.nuget\\packages\\microsoft.web.webview2\\1.0.3179.45\\microsoft.web.webview2.1.0.3179.45.nupkg.sha512",
     "C:\\Users\\LUQMAN_AF\\.nuget\\packages\\microsoft.windows.sdk.buildtools\\10.0.22621.756\\microsoft.windows.sdk.buildtools.10.0.22621.756.nupkg.sha512",
     "C:\\Users\\LUQMAN_AF\\.nuget\\packages\\microsoft.windowsappsdk\\1.7.250909003\\microsoft.windowsappsdk.1.7.250909003.nupkg.sha512",

@@ -1,4 +1,4 @@
-<api type="debug" assembly-name="JimatAPP#2" mvid="ce5f9cc8d5ff4dfab7bb46836dd2e1f2">
+<api type="debug" assembly-name="JimatAPP#2" mvid="64cda7d8fe0a43d9a33619eaa5127349">
   <java-to-managed>
     <entry java-name="crc64fbeca6b22ebd2509/MainActivity" managed-name="JimatAPP_2.MainActivity, JimatAPP#2" managed-type-token-id="33554452" />
     <entry java-name="crc64fbeca6b22ebd2509/MainApplication" managed-name="JimatAPP_2.MainApplication, JimatAPP#2" managed-type-token-id="33554453" />
