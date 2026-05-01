@@ -155,13 +155,3 @@ build_metadata.AdditionalFiles.Inflator = SourceGen
 build_metadata.AdditionalFiles.NoWarn = 
 build_metadata.AdditionalFiles.EnableDiagnostics = 
 build_metadata.AdditionalFiles.LineInfo = 
-
-[C:/Users/LUQMAN_AF/source/repos/JimatAPP\#2/JimatAPP\#2/ViewSummary.xaml]
-build_metadata.AdditionalFiles.GenKind = Xaml
-build_metadata.AdditionalFiles.ManifestResourceName = JimatAPP_2.ViewSummary.xaml
-build_metadata.AdditionalFiles.TargetPath = ViewSummary.xaml
-build_metadata.AdditionalFiles.RelativePath = ViewSummary.xaml
-build_metadata.AdditionalFiles.Inflator = SourceGen
-build_metadata.AdditionalFiles.NoWarn = 
-build_metadata.AdditionalFiles.EnableDiagnostics = 
-build_metadata.AdditionalFiles.LineInfo = 

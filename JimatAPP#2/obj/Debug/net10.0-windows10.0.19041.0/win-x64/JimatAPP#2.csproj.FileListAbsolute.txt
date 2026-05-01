@@ -414,10 +414,6 @@ C:\Users\LUQMAN_AF\source\repos\JimatAPP#2\JimatAPP#2\bin\Debug\net10.0-windows1
 C:\Users\LUQMAN_AF\source\repos\JimatAPP#2\JimatAPP#2\bin\Debug\net10.0-windows10.0.19041.0\win-x64\e_sqlite3.dll
 C:\Users\LUQMAN_AF\source\repos\JimatAPP#2\JimatAPP#2\bin\Debug\net10.0-windows10.0.19041.0\win-x64\Microsoft.Windows.SDK.NET.dll
 C:\Users\LUQMAN_AF\source\repos\JimatAPP#2\JimatAPP#2\bin\Debug\net10.0-windows10.0.19041.0\win-x64\WinRT.Runtime.dll
-C:\Users\LUQMAN_AF\source\repos\JimatAPP#2\JimatAPP#2\bin\Debug\net10.0-windows10.0.19041.0\win-x64\Microsoft.Maui.Controls.HotReload.Forms.dll
-C:\Users\LUQMAN_AF\source\repos\JimatAPP#2\JimatAPP#2\bin\Debug\net10.0-windows10.0.19041.0\win-x64\Microsoft.VisualStudio.DesignTools.MobileTapContracts.dll
-C:\Users\LUQMAN_AF\source\repos\JimatAPP#2\JimatAPP#2\bin\Debug\net10.0-windows10.0.19041.0\win-x64\Microsoft.VisualStudio.DesignTools.TapContract.dll
-C:\Users\LUQMAN_AF\source\repos\JimatAPP#2\JimatAPP#2\bin\Debug\net10.0-windows10.0.19041.0\win-x64\Microsoft.VisualStudio.DesignTools.XamlTapContract.dll
 C:\Users\LUQMAN_AF\source\repos\JimatAPP#2\JimatAPP#2\bin\Debug\net10.0-windows10.0.19041.0\win-x64\Microsoft.Web.WebView2.Core.Projection.dll
 C:\Users\LUQMAN_AF\source\repos\JimatAPP#2\JimatAPP#2\bin\Debug\net10.0-windows10.0.19041.0\win-x64\Microsoft.UI.pri
 C:\Users\LUQMAN_AF\source\repos\JimatAPP#2\JimatAPP#2\bin\Debug\net10.0-windows10.0.19041.0\win-x64\Microsoft.UI.Xaml.Controls.pri
@@ -515,3 +511,4 @@ C:\Users\LUQMAN_AF\source\repos\JimatAPP#2\JimatAPP#2\obj\Debug\net10.0-windows1
 C:\Users\LUQMAN_AF\source\repos\JimatAPP#2\JimatAPP#2\obj\Debug\net10.0-windows10.0.19041.0\win-x64\qualifiers.txt
 C:\Users\LUQMAN_AF\source\repos\JimatAPP#2\JimatAPP#2\obj\Debug\net10.0-windows10.0.19041.0\win-x64\qualifiers.txt.intermediate
 C:\Users\LUQMAN_AF\source\repos\JimatAPP#2\JimatAPP#2\obj\Debug\net10.0-windows10.0.19041.0\win-x64\MultipleQualifiersPerDimensionFound.txt
+C:\Users\LUQMAN_AF\source\repos\JimatAPP#2\JimatAPP#2\obj\Debug\net10.0-windows10.0.19041.0\win-x64\JimatAPP#2.sourcelink.json

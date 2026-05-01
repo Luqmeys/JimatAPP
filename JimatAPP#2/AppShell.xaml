@@ -11,13 +11,13 @@
     
     <Shell.FlyoutHeader>
         <VerticalStackLayout>
-            <Label Text="MENU" HeightRequest="50" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" Shell.BackgroundColor="#6EE7B7"></Label>
+            <Label Text="Jimat APP : Money Usage Tracker MENU" HeightRequest="50" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" Shell.BackgroundColor="#6EE7B7"></Label>
         </VerticalStackLayout>
     </Shell.FlyoutHeader>
 
 
     <ShellContent
-        Title="View Expenses/Income"
+        Title="Home (View Expenses/Income)"
         ContentTemplate="{DataTemplate local:ViewExpenses}"
         Route="MainPage" />
 

@@ -1,0 +1,657 @@
+﻿using Microsoft.Maui.Graphics;
+
+namespace JimatAPP_2
+{
+    // ── Pie chart drawable — fixed arc drawing ────────────────────────────────
+    public class PieChartDrawable : IDrawable
+    {
+        public List<(string Label, decimal Value, Color Slice)> Segments { get; set; } = new();
+
+        public void Draw(ICanvas canvas, RectF dirtyRect)
+        {
+            if (Segments == null || Segments.Count == 0) return;
+
+            float cx = dirtyRect.Width / 2f;
+            float cy = dirtyRect.Height / 2f;
+            float radius = Math.Min(cx, cy) - 10f;
+            if (radius <= 0) return;
+
+            decimal total = Segments.Sum(s => s.Value);
+            if (total <= 0) return;
+
+            float startDeg = -90f;
+
+            foreach (var seg in Segments)
+            {
+                float sweep = (float)(seg.Value / total) * 360f;
+                float endDeg = startDeg + sweep;
+
+                canvas.FillColor = seg.Slice;
+
+                var path = new PathF();
+                path.MoveTo(cx, cy);
+
+                int steps = Math.Max(3, (int)(sweep / 2));
+                for (int s = 0; s <= steps; s++)
+                {
+                    float angle = startDeg + sweep * s / steps;
+                    float rad = angle * MathF.PI / 180f;
+                    path.LineTo(cx + radius * MathF.Cos(rad),
+                                cy + radius * MathF.Sin(rad));
+                }
+                path.Close();
+                canvas.FillPath(path);
+
+                startDeg = endDeg;
+            }
+
+            // Donut hole
+            canvas.FillColor = Color.FromArgb("#1A1A1A");
+            canvas.FillCircle(cx, cy, radius * 0.52f);
+        }
+    }
+
+    // ── Summary page ─────────────────────────────────────────────────────────
+    public partial class Summary : ContentPage
+    {
+        private static readonly Color[] Palette =
+        {
+            Color.FromArgb("#6EE7B7"),
+            Color.FromArgb("#60A5FA"),
+            Color.FromArgb("#F87171"),
+            Color.FromArgb("#FBBF24"),
+            Color.FromArgb("#A78BFA"),
+            Color.FromArgb("#34D399"),
+            Color.FromArgb("#FB923C"),
+            Color.FromArgb("#38BDF8"),
+            Color.FromArgb("#E879F9"),
+            Color.FromArgb("#4ADE80"),
+        };
+
+        private static readonly Color GreenAccent = Color.FromArgb("#6EE7B7");
+        private static readonly Color RedAccent = Color.FromArgb("#FF7C7C");
+        private static readonly Color MutedText = Color.FromArgb("#888888");
+        private static readonly Color DarkCard = Color.FromArgb("#2A2A2A");
+        private static readonly Color BarBg = Color.FromArgb("#3A3A3A");
+        private static readonly Color DisabledArrow = Color.FromArgb("#444444");
+
+        private enum Period { Week, Month, Year, All }
+        private enum Tab { Expenses, Income }
+
+        // ── Sort mode for detail popup ────────────────────────────────────────
+        private enum DetailSort { Date, Amount }
+        private DetailSort _detailSort = DetailSort.Date; // default: Date
+
+        private Period _period = Period.Week;
+        private Tab _tab = Tab.Expenses;
+        private int _periodOffset = 0;
+
+        private readonly PieChartDrawable _pieDrawable = new();
+        private readonly List<(Border Bg, BoxView Fill, double Pct)> _barRefs = new();
+
+        // Current groups for breakdown tap detail
+        private List<(string Category, decimal Amount)> _currentGroups = new();
+        private DateTime _currentStart;
+        private DateTime _currentEnd;
+        private string _currentPeriodLabel = "";
+
+        // Remembered for re-sorting without re-querying
+        private string _detailCategory = "";
+        private Color _detailAccent = Colors.White;
+
+        public Summary()
+        {
+            InitializeComponent();
+            PieChart.Drawable = _pieDrawable;
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            Refresh();
+        }
+
+        // ── Tab handlers ──────────────────────────────────────────────────────
+
+        private void OnExpensesTabTapped(object sender, EventArgs e)
+        {
+            if (_tab == Tab.Expenses) return;
+            _tab = Tab.Expenses;
+            UpdateTabUI();
+            Refresh();
+        }
+
+        private void OnIncomeTabTapped(object sender, EventArgs e)
+        {
+            if (_tab == Tab.Income) return;
+            _tab = Tab.Income;
+            UpdateTabUI();
+            Refresh();
+        }
+
+        private void UpdateTabUI()
+        {
+            bool isExp = _tab == Tab.Expenses;
+            ExpensesTabLabel.TextColor = isExp ? Colors.White : MutedText;
+            ExpensesTabUnderline.BackgroundColor = isExp ? Colors.White : Colors.Transparent;
+            IncomeTabLabel.TextColor = !isExp ? Colors.White : MutedText;
+            IncomeTabUnderline.BackgroundColor = !isExp ? Colors.White : Colors.Transparent;
+            TotalCardTitle.Text = isExp ? "Total Expenses" : "Total Income";
+        }
+
+        // ── Period pill handlers ──────────────────────────────────────────────
+
+        private void OnWeekTapped(object sender, EventArgs e)
+        {
+            if (_period == Period.Week && _periodOffset == 0) return;
+            _period = Period.Week; _periodOffset = 0; UpdatePillUI(); Refresh();
+        }
+        private void OnMonthTapped(object sender, EventArgs e)
+        {
+            if (_period == Period.Month && _periodOffset == 0) return;
+            _period = Period.Month; _periodOffset = 0; UpdatePillUI(); Refresh();
+        }
+        private void OnYearTapped(object sender, EventArgs e)
+        {
+            if (_period == Period.Year && _periodOffset == 0) return;
+            _period = Period.Year; _periodOffset = 0; UpdatePillUI(); Refresh();
+        }
+        private void OnAllTapped(object sender, EventArgs e)
+        {
+            if (_period == Period.All) return;
+            _period = Period.All; _periodOffset = 0; UpdatePillUI(); Refresh();
+        }
+
+        private void UpdatePillUI()
+        {
+            WeekPillLabel.TextColor = MutedText;
+            MonthPillLabel.TextColor = MutedText;
+            YearPillLabel.TextColor = MutedText;
+            AllPillLabel.TextColor = MutedText;
+
+            switch (_period)
+            {
+                case Period.Week: WeekPillLabel.TextColor = GreenAccent; break;
+                case Period.Month: MonthPillLabel.TextColor = GreenAccent; break;
+                case Period.Year: YearPillLabel.TextColor = GreenAccent; break;
+                default: AllPillLabel.TextColor = GreenAccent; break;
+            }
+
+            Grid.SetColumn(ActivePill, _period switch
+            {
+                Period.Week => 0,
+                Period.Month => 1,
+                Period.Year => 2,
+                _ => 3
+            });
+        }
+
+        // ── Period navigation ─────────────────────────────────────────────────
+
+        private void OnPreviousPeriodTapped(object sender, EventArgs e)
+        {
+            if (_period == Period.All) return;
+            _periodOffset--;
+            Refresh();
+        }
+
+        private void OnNextPeriodTapped(object sender, EventArgs e)
+        {
+            if (_period == Period.All || _periodOffset >= 0) return;
+            _periodOffset++;
+            Refresh();
+        }
+
+        private void OnBackToCurrentTapped(object sender, EventArgs e)
+        {
+            _periodOffset = 0;
+            Refresh();
+        }
+
+        // ── Core refresh ─────────────────────────────────────────────────────
+
+        private void Refresh()
+        {
+            var (start, end, label) = GetDateRange();
+            _currentStart = start;
+            _currentEnd = end;
+            _currentPeriodLabel = label;
+            PeriodRangeLabel.Text = label;
+
+            bool atCurrent = _period == Period.All || _periodOffset >= 0;
+            NextArrowLabel.TextColor = atCurrent ? DisabledArrow : Colors.White;
+            BackToCurrentBorder.IsVisible = _period != Period.All && _periodOffset < 0;
+
+            if (_tab == Tab.Expenses)
+                RefreshData(ExpenseStore.Items, start, end, RedAccent);
+            else
+                RefreshData(IncomeStore.Items, start, end, GreenAccent);
+
+            RefreshNetBalance(start, end);
+        }
+
+        private (DateTime start, DateTime end, string label) GetDateRange()
+        {
+            var today = DateTime.Today;
+
+            if (_period == Period.All)
+                return (DateTime.MinValue, DateTime.MaxValue, "All Time");
+
+            if (_period == Period.Week)
+            {
+                var ws = today.AddDays(-(int)today.DayOfWeek).AddDays(_periodOffset * 7);
+                var we = ws.AddDays(6);
+                string lbl = _periodOffset == 0 ? $"This week · {ws:MMM d} – {we:MMM d}"
+                           : _periodOffset == -1 ? $"Last week · {ws:MMM d} – {we:MMM d}"
+                           : $"{ws:MMM d} – {we:MMM d, yyyy}";
+                return (ws, we, lbl);
+            }
+
+            if (_period == Period.Month)
+            {
+                var ref2 = today.AddMonths(_periodOffset);
+                var ms = new DateTime(ref2.Year, ref2.Month, 1);
+                var me = ms.AddMonths(1).AddDays(-1);
+                string lbl = _periodOffset == 0 ? $"This month · {ms:MMMM yyyy}"
+                           : _periodOffset == -1 ? $"Last month · {ms:MMMM yyyy}"
+                           : ms.ToString("MMMM yyyy");
+                return (ms, me, lbl);
+            }
+
+            int year = today.Year + _periodOffset;
+            return (new DateTime(year, 1, 1), new DateTime(year, 12, 31),
+                    _periodOffset == 0 ? $"This year · {year}" : year.ToString());
+        }
+
+        // ── Unified data refresh ──────────────────────────────────────────────
+
+        private void RefreshData<T>(
+            IEnumerable<T> store, DateTime start, DateTime end, Color totalColor)
+            where T : class
+        {
+            List<T> items;
+            if (_tab == Tab.Expenses)
+                items = ExpenseStore.Items
+                    .Where(i => i.Date.Date >= start.Date && i.Date.Date <= end.Date)
+                    .Cast<T>().ToList();
+            else
+                items = IncomeStore.Items
+                    .Where(i => i.Date.Date >= start.Date && i.Date.Date <= end.Date)
+                    .Cast<T>().ToList();
+
+            decimal total = _tab == Tab.Expenses
+                ? items.Cast<ExpenseItem>().Sum(i => i.Amount)
+                : items.Cast<IncomeItem>().Sum(i => i.Amount);
+
+            var groups = _tab == Tab.Expenses
+                ? items.Cast<ExpenseItem>()
+                       .GroupBy(i => i.Category)
+                       .Select(g => (Category: g.Key, Amount: g.Sum(x => x.Amount)))
+                       .OrderByDescending(g => g.Amount).ToList()
+                : items.Cast<IncomeItem>()
+                       .GroupBy(i => i.Category)
+                       .Select(g => (Category: g.Key, Amount: g.Sum(x => x.Amount)))
+                       .OrderByDescending(g => g.Amount).ToList();
+
+            _currentGroups = groups;
+
+            TotalAmountLabel.Text = $"RM {total:F2}";
+            TotalAmountLabel.TextColor = totalColor;
+
+            DrawPieAndLegend(groups, total);
+            DrawBreakdown(groups, total);
+        }
+
+        // ── Pie chart + legend ────────────────────────────────────────────────
+
+        private void DrawPieAndLegend(
+            List<(string Category, decimal Amount)> groups, decimal total)
+        {
+            LegendStack.Children.Clear();
+            _pieDrawable.Segments.Clear();
+
+            bool hasData = groups.Count > 0 && total > 0;
+            PieChart.IsVisible = hasData;
+            EmptyChartLabel.IsVisible = !hasData;
+
+            if (!hasData) return;
+
+            for (int i = 0; i < groups.Count; i++)
+            {
+                var g = groups[i];
+                var color = Palette[i % Palette.Length];
+                _pieDrawable.Segments.Add((g.Category, g.Amount, color));
+
+                double pct = (double)(g.Amount / total * 100);
+
+                var row = new Grid();
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = 14 });
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Star });
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+                var dot = new BoxView
+                {
+                    BackgroundColor = color,
+                    WidthRequest = 12,
+                    HeightRequest = 12,
+                    CornerRadius = 6,
+                    VerticalOptions = LayoutOptions.Center
+                };
+                var catLbl = new Label
+                {
+                    Text = g.Category,
+                    FontSize = 13,
+                    TextColor = Colors.White,
+                    VerticalOptions = LayoutOptions.Center,
+                    Margin = new Thickness(8, 0, 0, 0)
+                };
+                var pctLbl = new Label
+                {
+                    Text = $"{pct:F1}%",
+                    FontSize = 13,
+                    TextColor = color,
+                    FontAttributes = FontAttributes.Bold,
+                    VerticalOptions = LayoutOptions.Center
+                };
+                Grid.SetColumn(catLbl, 1);
+                Grid.SetColumn(pctLbl, 2);
+                row.Children.Add(dot);
+                row.Children.Add(catLbl);
+                row.Children.Add(pctLbl);
+                LegendStack.Children.Add(row);
+            }
+
+            PieChart.Invalidate();
+        }
+
+        // ── Breakdown list ────────────────────────────────────────────────────
+
+        private void DrawBreakdown(
+            List<(string Category, decimal Amount)> groups, decimal total)
+        {
+            BreakdownStack.Children.Clear();
+            _barRefs.Clear();
+
+            EmptyBreakdownLabel.IsVisible = groups.Count == 0;
+
+            for (int i = 0; i < groups.Count; i++)
+            {
+                var g = groups[i];
+                var color = Palette[i % Palette.Length];
+                double pct = total > 0 ? (double)(g.Amount / total * 100) : 0;
+                var capturedGroup = g;
+                var capturedColor = color;
+
+                var card = new Border
+                {
+                    BackgroundColor = DarkCard,
+                    StrokeThickness = 0,
+                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 16 },
+                    Padding = new Thickness(16, 12)
+                };
+                card.GestureRecognizers.Add(new TapGestureRecognizer
+                {
+                    Command = new Command(() => ShowBreakdownDetail(capturedGroup.Category, capturedColor))
+                });
+
+                var layout = new VerticalStackLayout { Spacing = 8 };
+
+                var topRow = new Grid();
+                topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Star });
+                topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+                var catLbl = new Label
+                {
+                    Text = g.Category,
+                    FontSize = 14,
+                    FontAttributes = FontAttributes.Bold,
+                    TextColor = color,
+                    VerticalOptions = LayoutOptions.Center
+                };
+                var tapHint = new Label
+                {
+                    Text = "tap for details →",
+                    FontSize = 10,
+                    TextColor = MutedText,
+                    VerticalOptions = LayoutOptions.Center,
+                    Margin = new Thickness(6, 0, 0, 0)
+                };
+                var leftRow = new HorizontalStackLayout { VerticalOptions = LayoutOptions.Center };
+                leftRow.Children.Add(catLbl);
+                leftRow.Children.Add(tapHint);
+
+                var amtLbl = new Label
+                {
+                    Text = $"RM {g.Amount:F2}",
+                    FontSize = 14,
+                    FontAttributes = FontAttributes.Bold,
+                    TextColor = Colors.White,
+                    VerticalOptions = LayoutOptions.Center
+                };
+                Grid.SetColumn(amtLbl, 1);
+                topRow.Children.Add(leftRow);
+                topRow.Children.Add(amtLbl);
+
+                var barGrid = new Grid();
+                barGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(pct, GridUnitType.Star) });
+                barGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100 - pct, GridUnitType.Star) });
+                barGrid.HeightRequest = 6;
+
+                var barFill = new BoxView { BackgroundColor = color, HeightRequest = 6, CornerRadius = 4 };
+                var barEmpty = new BoxView { BackgroundColor = BarBg, HeightRequest = 6, CornerRadius = 4 };
+                Grid.SetColumn(barEmpty, 1);
+                barGrid.Children.Add(barFill);
+                barGrid.Children.Add(barEmpty);
+
+                var pctLbl = new Label
+                {
+                    Text = $"{pct:F1}% of total",
+                    FontSize = 11,
+                    TextColor = MutedText
+                };
+
+                layout.Children.Add(topRow);
+                layout.Children.Add(barGrid);
+                layout.Children.Add(pctLbl);
+                card.Content = layout;
+                BreakdownStack.Children.Add(card);
+            }
+        }
+
+        // ── Breakdown detail popup ────────────────────────────────────────────
+
+        private void ShowBreakdownDetail(string category, Color accentColor)
+        {
+            // Remember for re-sort without re-querying
+            _detailCategory = category;
+            _detailAccent = accentColor;
+
+            // Reset sort to Date whenever a new category is opened
+            _detailSort = DetailSort.Date;
+
+            DetailPopupCategoryLabel.Text = category;
+            DetailPopupCategoryLabel.TextColor = accentColor;
+            DetailPopupPeriodLabel.Text = _currentPeriodLabel;
+
+            UpdateSortButtonUI();
+            RebuildDetailRows();
+
+            DetailPopupOverlay.IsVisible = true;
+        }
+
+        // ── Sort toggle handler (wire this up in your XAML button) ────────────
+        // Add an x:Name="SortToggleButton" Button/Border in your detail popup XAML
+        // and call this handler on tap.
+
+        private void OnDetailSortToggled(object sender, EventArgs e)
+        {
+            _detailSort = _detailSort == DetailSort.Date
+                ? DetailSort.Amount
+                : DetailSort.Date;
+
+            UpdateSortButtonUI();
+            RebuildDetailRows();
+        }
+
+        private void UpdateSortButtonUI()
+        {
+            // SortToggleLabel is an x:Name Label inside the sort toggle button.
+            // It shows which sort is currently active.
+            if (SortToggleLabel != null)
+            {
+                SortToggleLabel.Text = _detailSort == DetailSort.Date
+                    ? "⇅  Sort: Date"
+                    : "⇅  Sort: Amount";
+            }
+        }
+
+        // ── Build / rebuild the rows inside the detail popup ──────────────────
+
+        private void RebuildDetailRows()
+        {
+            // Query items for the current category
+            List<(DateTime Date, decimal Amount, string Desc)> items;
+            if (_tab == Tab.Expenses)
+            {
+                var query = ExpenseStore.Items
+                    .Where(i => i.Date.Date >= _currentStart.Date
+                             && i.Date.Date <= _currentEnd.Date
+                             && i.Category == _detailCategory);
+
+                items = (_detailSort == DetailSort.Date
+                    ? query.OrderByDescending(i => i.Date)
+                    : query.OrderByDescending(i => i.Amount))
+                    .Select(i => (i.Date, i.Amount, i.Description))
+                    .ToList();
+            }
+            else
+            {
+                var query = IncomeStore.Items
+                    .Where(i => i.Date.Date >= _currentStart.Date
+                             && i.Date.Date <= _currentEnd.Date
+                             && i.Category == _detailCategory);
+
+                items = (_detailSort == DetailSort.Date
+                    ? query.OrderByDescending(i => i.Date)
+                    : query.OrderByDescending(i => i.Amount))
+                    .Select(i => (i.Date, i.Amount, i.Description))
+                    .ToList();
+            }
+
+            decimal catTotal = items.Sum(i => i.Amount);
+            DetailPopupTotalLabel.Text = $"RM {catTotal:F2}";
+            DetailPopupTotalLabel.TextColor = _detailAccent;
+
+            DetailItemsStack.Children.Clear();
+
+            foreach (var item in items)
+            {
+                var capturedDate = item.Date; // capture for lambda
+
+                // ── Tappable row container ────────────────────────────────────
+                var rowBorder = new Border
+                {
+                    BackgroundColor = Colors.Transparent,
+                    StrokeThickness = 0,
+                    Padding = new Thickness(0, 6)
+                };
+
+                // Tap → navigate to the corresponding day page
+                rowBorder.GestureRecognizers.Add(new TapGestureRecognizer
+                {
+                    Command = new Command(async () =>
+                    {
+                        DetailPopupOverlay.IsVisible = false;
+
+                        if (_tab == Tab.Expenses)
+                            await Navigation.PushAsync(new ViewExpenses(capturedDate));
+                        else
+                            await Navigation.PushAsync(new ViewIncome(capturedDate));
+                    })
+                });
+
+                var row = new Grid();
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Star });
+                row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+                // Left column: date + description + "tap to view day →" hint
+                var leftCol = new VerticalStackLayout { Spacing = 2, VerticalOptions = LayoutOptions.Center };
+
+                var dateLbl = new Label
+                {
+                    Text = item.Date.ToString("MMM d, yyyy"),
+                    FontSize = 12,
+                    TextColor = MutedText
+                };
+                leftCol.Children.Add(dateLbl);
+
+                if (!string.IsNullOrWhiteSpace(item.Desc))
+                {
+                    leftCol.Children.Add(new Label
+                    {
+                        Text = item.Desc,
+                        FontSize = 11,
+                        TextColor = Color.FromArgb("#666666"),
+                        LineBreakMode = LineBreakMode.TailTruncation,
+                        MaxLines = 1
+                    });
+                }
+
+                // Small "tap to view" hint so users know rows are tappable
+                leftCol.Children.Add(new Label
+                {
+                    Text = "tap to view day →",
+                    FontSize = 9,
+                    TextColor = Color.FromArgb("#555555")
+                });
+
+                var amtLbl = new Label
+                {
+                    Text = $"RM {item.Amount:F2}",
+                    FontSize = 14,
+                    FontAttributes = FontAttributes.Bold,
+                    TextColor = Colors.White,
+                    VerticalOptions = LayoutOptions.Center
+                };
+                Grid.SetColumn(amtLbl, 1);
+
+                row.Children.Add(leftCol);
+                row.Children.Add(amtLbl);
+                rowBorder.Content = row;
+
+                // Separator
+                var sep = new BoxView
+                {
+                    HeightRequest = 1,
+                    BackgroundColor = Color.FromArgb("#2E2E2E"),
+                    Margin = new Thickness(0, 0)
+                };
+
+                DetailItemsStack.Children.Add(rowBorder);
+                DetailItemsStack.Children.Add(sep);
+            }
+        }
+
+        private void OnDetailPopupDismiss(object sender, EventArgs e) =>
+            DetailPopupOverlay.IsVisible = false;
+
+        private void OnDetailPopupCardTapped(object sender, EventArgs e) { }
+
+        // ── Net balance ───────────────────────────────────────────────────────
+
+        private void RefreshNetBalance(DateTime start, DateTime end)
+        {
+            decimal income = IncomeStore.Items
+                .Where(i => i.Date.Date >= start.Date && i.Date.Date <= end.Date)
+                .Sum(i => i.Amount);
+            decimal expenses = ExpenseStore.Items
+                .Where(i => i.Date.Date >= start.Date && i.Date.Date <= end.Date)
+                .Sum(i => i.Amount);
+            decimal net = income - expenses;
+
+            NetIncomeLabel.Text = $"RM {income:F2}";
+            NetExpensesLabel.Text = $"RM {expenses:F2}";
+            NetBalanceLabel.Text = $"RM {net:F2}";
+            NetBalanceLabel.TextColor = net >= 0 ? GreenAccent : RedAccent;
+        }
+    }
+}

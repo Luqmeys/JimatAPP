@@ -3,24 +3,32 @@
   "WorkspaceRootPath": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|c:\\users\\luqman_af\\source\\repos\\jimatapp#2\\jimatapp#2\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|solutionrelative:jimatapp#2\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|c:\\users\\luqman_af\\source\\repos\\jimatapp#2\\jimatapp#2\\summary.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|solutionrelative:jimatapp#2\\summary.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|c:\\users\\luqman_af\\source\\repos\\jimatapp#2\\jimatapp#2\\databaseservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|solutionrelative:jimatapp#2\\databaseservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|c:\\users\\luqman_af\\source\\repos\\jimatapp#2\\jimatapp#2\\appshell.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|solutionrelative:jimatapp#2\\appshell.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|c:\\users\\luqman_af\\source\\repos\\jimatapp#2\\jimatapp#2\\jimatapp#2.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|solutionrelative:jimatapp#2\\jimatapp#2.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+      "AbsoluteMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|c:\\users\\luqman_af\\source\\repos\\jimatapp#2\\jimatapp#2\\summary.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|solutionrelative:jimatapp#2\\summary.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|c:\\users\\luqman_af\\source\\repos\\jimatapp#2\\jimatapp#2\\aboutus.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|solutionrelative:jimatapp#2\\aboutus.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|c:\\users\\luqman_af\\source\\repos\\jimatapp#2\\jimatapp#2\\summary.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
-      "RelativeMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|solutionrelative:jimatapp#2\\summary.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+      "AbsoluteMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|c:\\users\\luqman_af\\source\\repos\\jimatapp#2\\jimatapp#2\\viewexpenses.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|solutionrelative:jimatapp#2\\viewexpenses.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|c:\\users\\luqman_af\\source\\repos\\jimatapp#2\\jimatapp#2\\viewincome.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|solutionrelative:jimatapp#2\\viewincome.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|c:\\users\\luqman_af\\source\\repos\\jimatapp#2\\jimatapp#2\\jimatapp#2.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{E70D4DBE-AB52-E355-60D6-2A892CFBB72A}|JimatAPP#2\\JimatAPP#2.csproj|solutionrelative:jimatapp#2\\jimatapp#2.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -39,14 +47,48 @@
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "JimatAPP#2",
-              "DocumentMoniker": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\JimatAPP#2.csproj",
-              "RelativeDocumentMoniker": "JimatAPP#2\\JimatAPP#2.csproj",
-              "ToolTip": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\JimatAPP#2.csproj",
-              "RelativeToolTip": "JimatAPP#2\\JimatAPP#2.csproj",
-              "ViewState": "AgIAACcAAAAAAAAAAAAAADMAAAA0AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-04-29T17:14:16.301Z",
+              "Title": "Summary.xaml",
+              "DocumentMoniker": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\Summary.xaml",
+              "RelativeDocumentMoniker": "JimatAPP#2\\Summary.xaml",
+              "ToolTip": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\Summary.xaml",
+              "RelativeToolTip": "JimatAPP#2\\Summary.xaml",
+              "ViewState": "AgIAAMwAAAAAAAAAAAAAwNwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-05-01T01:09:24.113Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AppShell.xaml",
+              "DocumentMoniker": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\AppShell.xaml",
+              "RelativeDocumentMoniker": "JimatAPP#2\\AppShell.xaml",
+              "ToolTip": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\AppShell.xaml",
+              "RelativeToolTip": "JimatAPP#2\\AppShell.xaml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAABAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-05-01T00:30:58.739Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Summary.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\Summary.xaml.cs",
+              "RelativeDocumentMoniker": "JimatAPP#2\\Summary.xaml.cs",
+              "ToolTip": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\Summary.xaml.cs",
+              "RelativeToolTip": "JimatAPP#2\\Summary.xaml.cs",
+              "ViewState": "AgIAAJMCAAAAAAAAAAAAAKECAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-30T13:23:34.847Z",
               "EditorCaption": ""
             },
             {
@@ -57,53 +99,49 @@
               "RelativeDocumentMoniker": "JimatAPP#2\\AboutUs.xaml",
               "ToolTip": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\AboutUs.xaml",
               "RelativeToolTip": "JimatAPP#2\\AboutUs.xaml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAEIAAAAAAAAAAAAAAEEAAAAwAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-04-29T16:22:59.836Z",
+              "WhenOpened": "2026-04-30T23:58:14.351Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "JimatAPP#2",
+              "DocumentMoniker": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\JimatAPP#2.csproj",
+              "RelativeDocumentMoniker": "JimatAPP#2\\JimatAPP#2.csproj",
+              "ToolTip": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\JimatAPP#2.csproj",
+              "RelativeToolTip": "JimatAPP#2\\JimatAPP#2.csproj",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAAB4AAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-30T23:28:27.07Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "Summary.xaml",
-              "DocumentMoniker": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\Summary.xaml",
-              "RelativeDocumentMoniker": "JimatAPP#2\\Summary.xaml",
-              "ToolTip": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\Summary.xaml",
-              "RelativeToolTip": "JimatAPP#2\\Summary.xaml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAABAAAAAAAAAA==",
+              "Title": "ViewExpenses.xaml",
+              "DocumentMoniker": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\ViewExpenses.xaml",
+              "RelativeDocumentMoniker": "JimatAPP#2\\ViewExpenses.xaml",
+              "ToolTip": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\ViewExpenses.xaml",
+              "RelativeToolTip": "JimatAPP#2\\ViewExpenses.xaml",
+              "ViewState": "AgIAAPwAAAAAAAAAAAAAACgAAAA0AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2026-04-29T07:24:31.341Z",
+              "WhenOpened": "2026-04-30T07:52:33.236Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "DatabaseService.cs",
-              "DocumentMoniker": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\DatabaseService.cs",
-              "RelativeDocumentMoniker": "JimatAPP#2\\DatabaseService.cs",
-              "ToolTip": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\DatabaseService.cs",
-              "RelativeToolTip": "JimatAPP#2\\DatabaseService.cs",
-              "ViewState": "AgIAAB0AAAAAAAAAAAAgwAUAAAAFAAAAAAAAAA==",
+              "DocumentIndex": 5,
+              "Title": "ViewIncome.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\ViewIncome.xaml.cs",
+              "RelativeDocumentMoniker": "JimatAPP#2\\ViewIncome.xaml.cs",
+              "ToolTip": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\ViewIncome.xaml.cs",
+              "RelativeToolTip": "JimatAPP#2\\ViewIncome.xaml.cs",
+              "ViewState": "AgIAADQAAAAAAAAAAAAcwJQAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-29T07:05:46.812Z",
+              "WhenOpened": "2026-04-30T04:19:50.033Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "App.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\App.xaml.cs",
-              "RelativeDocumentMoniker": "JimatAPP#2\\App.xaml.cs",
-              "ToolTip": "C:\\Users\\LUQMAN_AF\\source\\repos\\JimatAPP#2\\JimatAPP#2\\App.xaml.cs",
-              "RelativeToolTip": "JimatAPP#2\\App.xaml.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-29T06:58:33.802Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
             }
           ]
         }

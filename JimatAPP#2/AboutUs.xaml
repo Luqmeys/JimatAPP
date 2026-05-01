@@ -55,7 +55,7 @@
                 <VerticalStackLayout Spacing="8">
                     <Label Text="ABOUT APPLICATION" Style="{StaticResource SectionHeadingStyle}"/>
                     <Label Style="{StaticResource CardTextStyle}"
-                           Text="Jimat helps you effortlessly track expenses and manage budgets, empowering you to take full control of your financial future."/>
+                           Text="Jimat helps you effortlessly track expenses and manage budgets, empowering you to take full control of your financial future.it is a personal finance tracker mobile application built with .NET MAUI (Multi-platform App UI), targeting Android. The app name 'Jimat' means 'save' or 'thrifty' in Malay, reflecting its Malaysian context — all monetary values are displayed in Malaysian Ringgit (RM). The app helps users track their daily income and expenses, view spending breakdowns by category, and monitor their net financial balance over time."/>
                 </VerticalStackLayout>
             </Border>
 
@@ -63,10 +63,12 @@
             <Border BackgroundColor="#2E3250" StrokeThickness="0"
                     StrokeShape="RoundRectangle 16" Padding="20,18">
                 <VerticalStackLayout Spacing="10">
-                    <Label Text="DEVELOPER INFO" Style="{StaticResource SectionHeadingStyle}"/>
+                    <Label Text="DEVELOPER + APP INFO" Style="{StaticResource SectionHeadingStyle}"/>
 
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" RowSpacing="10">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
@@ -89,6 +91,12 @@
                         <!-- Platform -->
                         <Label Grid.Row="4" Grid.Column="0" Text="Platform" Style="{StaticResource InfoKeyStyle}"/>
                         <Label Grid.Row="4" Grid.Column="1" Text=".NET MAUI" Style="{StaticResource InfoValueStyle}"/>
+                        <!-- APP -->
+                        <Label Grid.Row="5" Grid.Column="0" Text="App Name" Style="{StaticResource InfoKeyStyle}"/>
+                        <Label Grid.Row="5" Grid.Column="1" Text="JimatAPP : Money Usage Tracker" Style="{StaticResource InfoValueStyle}"/>
+                        <!-- version -->
+                        <Label Grid.Row="6" Grid.Column="0" Text="Version" Style="{StaticResource InfoKeyStyle}"/>
+                        <Label Grid.Row="6" Grid.Column="1" Text="1.0" Style="{StaticResource InfoValueStyle}"/>
                     </Grid>
 
                 </VerticalStackLayout>
